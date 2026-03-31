@@ -192,7 +192,7 @@ Access the application at `http://localhost:8000`
 - **ReportCard** & **SubjectGrade**: Term reports
 - **Transcript**: Official academic records
 
-## 🔐 Security
+## Security
 
 - **Tenant Isolation**: Row Level Security + middleware enforcement
 - **Authentication**: JWT with refresh token rotation
@@ -324,8 +324,3 @@ SMS_USERNAME=your-username
 ##  Support
 
 For support, email elijahogato.dev@gmail.com join our community Slack.
-
----
-
-**Built  for African schools**
->>>>>>> 15a076a (Fix : removed nested git repo)
