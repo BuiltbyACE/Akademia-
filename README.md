@@ -112,7 +112,7 @@ Access the application at `http://localhost:8000`
 
 ##  Key Features
 
-### Phase 1: Foundation ✅
+### Phase 1: Foundation 
 - [x] Multi-tenant architecture with RLS
 - [x] Custom User model with email authentication
 - [x] Tenant middleware and context management
@@ -202,7 +202,7 @@ Access the application at `http://localhost:8000`
 - **Brute Force Protection**: Django Axes integration
 - **Payment Security**: Idempotency keys, callback verification
 
-## 🌍 Multi-Tenant Strategy
+## Multi-Tenant Strategy
 
 **Shared Database with tenant_id:**
 - Every tenant-owned row has `tenant_id`
@@ -215,7 +215,7 @@ Access the application at `http://localhost:8000`
 2. Subdomain (e.g., `school.elimu.app`)
 3. Custom domain mapping
 
-## 💰 Monetization Model
+## Monetization Model
 
 **Hybrid Pricing:**
 - Base platform fee + per-active-student pricing
@@ -228,14 +228,14 @@ Access the application at `http://localhost:8000`
 - White-label branding
 - Premium support & SLAs
 
-## 📊 API Documentation
+## API Documentation
 
 API documentation will be available at:
 - Swagger UI: `http://localhost:8000/api/docs/`
 - ReDoc: `http://localhost:8000/api/redoc/`
 - OpenAPI Schema: `http://localhost:8000/api/schema/`
 
-## 🧪 Testing
+##  Testing
 
 ```bash
 # Run all tests
@@ -248,7 +248,7 @@ pytest --cov=.
 pytest tenants/tests/
 ```
 
-## 📝 Environment Variables
+##  Environment Variables
 
 Key environment variables (see `.env.example`):
 
@@ -283,7 +283,7 @@ SMS_API_KEY=your-api-key
 SMS_USERNAME=your-username
 ```
 
-## 🚢 Deployment
+## Deployment
 
 ### Production Checklist
 - [ ] Set `DEBUG=False`
@@ -306,39 +306,13 @@ SMS_USERNAME=your-username
 - **AWS CloudFront** for CDN
 - **AWS SES** for email
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## 📄 License
-
-[
-
-elija@LABAN MINGW64 /c/HOME LAB/Projects/Elimu (main)
-$ git status
-Refresh index: 100% (226/226), done.
-On branch main
-nothing to commit, working tree clean
-
-elija@LABAN MINGW64 /c/HOME LAB/Projects/Elimu (main)
-$ git push -u origin main
-To https://github.com/BuiltbyACE/Akademia-
- ! [rejected]        main -> main (fetch first)
-error: failed to push some refs to 'https://github.com/BuiltbyACE/Akademia-'
-hint: Updates were rejected because the remote contains work that you do not
-hint: have locally. This is usually caused by another repository pushing to
-hint: the same ref. If you want to integrate the remote changes, use
-hint: 'git pull' before pushing again.
-hint: See the 'Note about fast-forwards' in 'git push --help' for details.
-
-elija@LABAN MINGW64 /c/HOME LAB/Projects/Elimu (main)
-$
-
-]
 
 ## Acknowledgments
 
@@ -347,11 +321,11 @@ $
 - Safaricom Daraja API for M-Pesa integration
 - Africa's education technology pioneers
 
-## 📞 Support
+##  Support
 
 For support, email elijahogato.dev@gmail.com join our community Slack.
 
 ---
 
-**Built with ❤️ for African schools**
+**Built  for African schools**
 >>>>>>> 15a076a (Fix : removed nested git repo)
