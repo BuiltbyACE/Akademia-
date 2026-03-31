@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+.login-bg-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.login-bg-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/images/mnara.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 55;
+  mix-blend-mode: overlay;
+  z-index: 0;
+}
+
+.login-bg-panel > * {
+  position: relative;
+  z-index: 1;
+}

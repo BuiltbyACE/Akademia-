@@ -1,0 +1,288 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <div class="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+        <span>ACADEMICS</span>
+        <span>→</span>
+        <span class="text-gray-900 font-medium">STUDENT DIRECTORY</span>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900">Student Directory</h1>
+      <p class="text-gray-600 mt-1">Managing {{ totalCount() }} active students across all departments.</p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <button class="btn-secondary">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Import CSV
+      </button>
+      <button class="btn-primary">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Student
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">GRADE</label>
+        <select 
+          [(ngModel)]="selectedGrade" 
+          (change)="onFilterChange()"
+          class="input"
+        >
+          <option value="all">All Grades</option>
+          <option value="9">Grade 9</option>
+          <option value="10">Grade 10</option>
+          <option value="11">Grade 11</option>
+          <option value="12">Grade 12</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">SECTION</label>
+        <select 
+          [(ngModel)]="selectedSection" 
+          (change)="onFilterChange()"
+          class="input"
+        >
+          <option value="all">All</option>
+          <option value="A">Section A</option>
+          <option value="B">Section B</option>
+          <option value="C">Section C</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">STATUS</label>
+        <select 
+          [(ngModel)]="selectedStatus" 
+          (change)="onFilterChange()"
+          class="input"
+        >
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="graduated">Graduated</option>
+        </select>
+      </div>
+      
+      <div class="flex items-end space-x-2">
+        <button class="btn-secondary flex-1">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+        </button>
+        <button class="btn-secondary flex-1">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+        </button>
+        <button (click)="clearFilters()" class="text-sm text-primary-600 hover:text-primary-700 font-medium px-4">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Table -->
+  <div class="card">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="px-4 py-3 text-left">
+              <input 
+                type="checkbox" 
+                [checked]="allSelected"
+                (change)="toggleAll()"
+                class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              />
+            </th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+              STUDENT NAME
+            </th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+              STUDENT ID
+            </th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+              GRADE/SECTION
+            </th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+              PARENT CONTACT
+            </th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+              FEE STATUS
+            </th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+              ATTENDANCE
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          @if (loading()) {
+            <tr>
+              <td colspan="7" class="px-4 py-12 text-center">
+                <div class="flex items-center justify-center">
+                  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                  <span class="ml-3 text-gray-600">Loading students...</span>
+                </div>
+              </td>
+            </tr>
+          } @else if (students().length === 0) {
+            <tr>
+              <td colspan="7" class="px-4 py-12 text-center text-gray-500">
+                No students found
+              </td>
+            </tr>
+          } @else {
+            @for (student of students(); track student.id) {
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-4 py-4">
+                  <input 
+                    type="checkbox"
+                    [checked]="isSelected(student.id)"
+                    (change)="toggleStudent(student.id)"
+                    class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  />
+                </td>
+                <td class="px-4 py-4">
+                  <a [routerLink]="['/students', student.id]" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span class="text-primary-600 font-medium text-sm">
+                        {{ student.first_name.charAt(0) }}{{ student.last_name.charAt(0) }}
+                      </span>
+                    </div>
+                    <div>
+                      <p class="text-sm font-medium text-gray-900 group-hover:text-primary-600">
+                        {{ student.first_name }} {{ student.last_name }}
+                      </p>
+                      <p class="text-sm text-gray-500">{{ student.email }}</p>
+                    </div>
+                  </a>
+                </td>
+                <td class="px-4 py-4">
+                  <span class="text-sm text-gray-900">{{ student.admission_number }}</span>
+                </td>
+                <td class="px-4 py-4">
+                  <span class="badge badge-primary">{{ student.current_grade }}</span>
+                </td>
+                <td class="px-4 py-4">
+                  <div class="text-sm">
+                    <p class="text-gray-900">Mark Thompson</p>
+                    <p class="text-gray-500">{{ student.phone || 'N/A' }}</p>
+                  </div>
+                </td>
+                <td class="px-4 py-4">
+                  <span [class]="'badge ' + getFeeStatusClass(student.fee_status)">
+                    {{ getFeeStatusText(student.fee_status) }}
+                  </span>
+                </td>
+                <td class="px-4 py-4">
+                  <div class="flex items-center space-x-2">
+                    <div class="flex-1 bg-gray-200 rounded-full h-2 max-w-[100px]">
+                      <div 
+                        class="bg-primary-600 h-2 rounded-full"
+                        [style.width.%]="student.attendance_rate || 0"
+                      ></div>
+                    </div>
+                    <span class="text-sm font-medium text-gray-900">{{ student.attendance_rate }}%</span>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-between px-4 py-3 border-t border-gray-200">
+      <p class="text-sm text-gray-700">
+        Showing <span class="font-medium">{{ (currentPage() - 1) * pageSize() + 1 }}</span> to 
+        <span class="font-medium">{{ Math.min(currentPage() * pageSize(), totalCount()) }}</span> of 
+        <span class="font-medium">{{ totalCount() }}</span> students
+      </p>
+      
+      <div class="flex items-center space-x-2">
+        <button 
+          (click)="goToPage(currentPage() - 1)"
+          [disabled]="currentPage() === 1"
+          class="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Previous
+        </button>
+        
+        @for (page of pages; track page) {
+          @if (page === -1) {
+            <span class="px-3 py-1 text-gray-500">...</span>
+          } @else {
+            <button
+              (click)="goToPage(page)"
+              [class.bg-primary-600]="page === currentPage()"
+              [class.text-white]="page === currentPage()"
+              [class.text-gray-700]="page !== currentPage()"
+              [class.hover:bg-gray-50]="page !== currentPage()"
+              class="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium"
+            >
+              {{ page }}
+            </button>
+          }
+        }
+        
+        <button 
+          (click)="goToPage(currentPage() + 1)"
+          [disabled]="currentPage() === totalPages"
+          class="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Actions Bar -->
+  @if (selectedStudents().size > 0) {
+    <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-xl border border-gray-200 px-6 py-4 flex items-center space-x-4">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
+          <span class="text-white font-medium text-sm">{{ selectedStudents().size }}</span>
+        </div>
+        <span class="text-sm font-medium text-gray-900">Selected</span>
+      </div>
+      
+      <div class="h-6 w-px bg-gray-300"></div>
+      
+      <button class="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+        <span>Send SMS</span>
+      </button>
+      
+      <button class="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+        <span>Change Status</span>
+      </button>
+      
+      <button class="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        <span>Export Selected</span>
+      </button>
+      
+      <button class="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-danger-600 hover:bg-danger-50 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </button>
+    </div>
+  }
+</div>

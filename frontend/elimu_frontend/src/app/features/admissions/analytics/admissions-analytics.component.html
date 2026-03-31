@@ -1,0 +1,231 @@
+@if (loading()) {
+  <div class="flex items-center justify-center h-64">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+  </div>
+} @else if (analytics()) {
+  <div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
+        <p class="text-gray-600 mt-1">Enrollment Cycle: {{ analytics()!.enrollment_cycle }}</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button class="btn-secondary">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          {{ selectedPeriod() }}
+        </button>
+        <button class="btn-primary">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Export Report
+        </button>
+      </div>
+    </div>
+
+    <!-- Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <span [class]="getChangeClass(analytics()!.total_applications_change)" class="text-sm font-medium">
+            +{{ analytics()!.total_applications_change }}%
+          </span>
+        </div>
+        <p class="text-xs text-gray-600 uppercase mb-1">Total Applications</p>
+        <p class="text-3xl font-bold text-gray-900">{{ analytics()!.total_applications.toLocaleString() }}</p>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+          </div>
+          <span [class]="getChangeClass(analytics()!.conversion_rate_change)" class="text-sm font-medium">
+            +{{ analytics()!.conversion_rate_change }}%
+          </span>
+        </div>
+        <p class="text-xs text-gray-600 uppercase mb-1">Conversion Rate</p>
+        <p class="text-3xl font-bold text-gray-900">{{ analytics()!.conversion_rate }}%</p>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+          <span [class]="getChangeClass(analytics()!.yield_rate_change)" class="text-sm font-medium">
+            {{ analytics()!.yield_rate_change }}%
+          </span>
+        </div>
+        <p class="text-xs text-gray-600 uppercase mb-1">Yield Rate</p>
+        <p class="text-3xl font-bold text-gray-900">{{ analytics()!.yield_rate }}%</p>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <span [class]="getChangeClass(analytics()!.time_to_enroll_change)" class="text-sm font-medium">
+            {{ analytics()!.time_to_enroll_change }} days
+          </span>
+        </div>
+        <p class="text-xs text-gray-600 uppercase mb-1">Time to Enroll</p>
+        <p class="text-3xl font-bold text-gray-900">{{ analytics()!.time_to_enroll }} <span class="text-sm font-normal text-gray-600">days</span></p>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Pipeline Funnel -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="card">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Admissions Pipeline Funnel</h3>
+            <div class="flex items-center space-x-3 text-sm">
+              <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 bg-primary-600 rounded-full"></div>
+                <span class="text-gray-600">Current Cycle</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 bg-gray-300 rounded-full"></div>
+                <span class="text-gray-600">Forecast</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            @for (stage of analytics()!.pipeline_funnel; track stage.stage) {
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-medium text-gray-900">{{ stage.stage }} ({{ stage.count.toLocaleString() }})</span>
+                  <span class="text-sm text-gray-600">{{ stage.percentage }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-8">
+                  <div class="bg-primary-600 h-8 rounded-full flex items-center justify-end pr-3" 
+                       [style.width.%]="stage.percentage">
+                    <span class="text-white text-xs font-medium">{{ stage.percentage }}%</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Enrollment Trends -->
+        <div class="card">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">Enrollment Trends</h3>
+              <p class="text-sm text-gray-600">Monthly volume comparison</p>
+            </div>
+            <div class="flex items-center space-x-3 text-sm">
+              <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 bg-primary-600 rounded-full"></div>
+                <span class="text-gray-600">2024</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                <span class="text-gray-600">2023</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="h-64 flex items-end justify-between space-x-2">
+            @for (trend of analytics()!.enrollment_trends; track trend.month) {
+              <div class="flex-1 flex flex-col items-center">
+                <div class="w-full flex items-end justify-center space-x-1 mb-2" style="height: 200px;">
+                  <div class="w-1/2 bg-primary-600 rounded-t" 
+                       [style.height.%]="(trend.current_year / 220) * 100"
+                       [title]="'2024: ' + trend.current_year">
+                  </div>
+                  <div class="w-1/2 bg-gray-400 rounded-t" 
+                       [style.height.%]="(trend.previous_year / 220) * 100"
+                       [title]="'2023: ' + trend.previous_year">
+                  </div>
+                </div>
+                <span class="text-xs font-medium text-gray-600">{{ trend.month }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
+          </div>
+          <div class="space-y-3">
+            @for (activity of analytics()!.recent_activity; track activity.id) {
+              <div class="flex items-start space-x-3">
+                <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span class="text-primary-600 font-medium text-sm">{{ activity.applicant_name.charAt(0) }}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900">{{ activity.applicant_name }}</p>
+                  <p class="text-xs text-gray-600">{{ activity.description }}</p>
+                  <p class="text-xs text-gray-500 mt-1">{{ activity.timestamp }}</p>
+                </div>
+                @if (activity.activity_type === 'status_change') {
+                  <svg class="w-5 h-5 text-primary-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                }
+                @if (activity.activity_type === 'document_upload') {
+                  <svg class="w-5 h-5 text-success-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                }
+                @if (activity.activity_type === 'interview') {
+                  <svg class="w-5 h-5 text-warning-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                }
+              </div>
+            }
+          </div>
+          <button class="w-full mt-4 text-sm text-primary-600 hover:text-primary-700 font-medium py-2 border border-primary-200 rounded-lg hover:bg-primary-50">
+            View All Activity
+          </button>
+        </div>
+
+        <!-- Applications by Grade -->
+        <div class="card">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Applications by Grade</h3>
+          <div class="space-y-3">
+            @for (grade of analytics()!.applications_by_grade; track grade.grade) {
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm font-medium text-gray-900">{{ grade.grade }}</span>
+                  <span class="text-sm font-medium text-gray-900">{{ grade.count }}</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-primary-600 h-2 rounded-full" 
+                       [style.width.%]="grade.max_count ? (grade.count / grade.max_count) * 100 : 0">
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

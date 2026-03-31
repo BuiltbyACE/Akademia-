@@ -1,0 +1,124 @@
+<header class="bg-white border-b border-gray-200 h-16 fixed top-0 right-0 left-64 z-30 px-6">
+  <div class="flex items-center justify-between h-full">
+    <!-- Search -->
+    <div class="flex-1 max-w-2xl">
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          type="text"
+          placeholder="Search for students, staff, or invoices..."
+          class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        />
+      </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="flex items-center space-x-4 ml-6">
+      <!-- Date Display -->
+      <div class="hidden md:flex items-center space-x-2 text-sm text-gray-600">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>May 2024</span>
+      </div>
+
+      <!-- Notifications -->
+      <div class="relative">
+        <button
+          (click)="toggleNotifications()"
+          class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          @if (unreadCount > 0) {
+            <span class="absolute top-1 right-1 w-2 h-2 bg-danger-500 rounded-full"></span>
+          }
+        </button>
+
+        <!-- Notifications Dropdown -->
+        @if (showNotifications()) {
+          <div class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+            <div class="px-4 py-2 border-b border-gray-200">
+              <h3 class="font-semibold text-gray-900">Notifications</h3>
+            </div>
+            <div class="max-h-96 overflow-y-auto">
+              @for (notification of notifications(); track notification.id) {
+                <a
+                  href="#"
+                  [class.bg-primary-50]="notification.unread"
+                  class="block px-4 py-3 hover:bg-gray-50 transition-colors"
+                >
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-gray-900">{{ notification.title }}</p>
+                      <p class="text-sm text-gray-600 truncate">{{ notification.message }}</p>
+                      <p class="text-xs text-gray-500 mt-1">{{ notification.time }}</p>
+                    </div>
+                    @if (notification.unread) {
+                      <div class="w-2 h-2 bg-primary-600 rounded-full mt-2"></div>
+                    }
+                  </div>
+                </a>
+              }
+            </div>
+            <div class="px-4 py-2 border-t border-gray-200">
+              <a href="#" class="text-sm text-primary-600 hover:text-primary-700 font-medium">View all notifications</a>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Apps Menu -->
+      <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+      </button>
+
+      <!-- User Menu -->
+      <div class="relative">
+        <button
+          (click)="toggleUserMenu()"
+          class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
+            <span class="text-white font-medium text-sm">
+              {{ currentUser()?.first_name?.charAt(0) }}{{ currentUser()?.last_name?.charAt(0) }}
+            </span>
+          </div>
+          <div class="hidden md:block text-left">
+            <p class="text-sm font-medium text-gray-900">
+              {{ currentUser()?.first_name }} {{ currentUser()?.last_name }}
+            </p>
+            <p class="text-xs text-gray-500 uppercase">{{ currentUser()?.role }}</p>
+          </div>
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- User Dropdown -->
+        @if (showUserMenu()) {
+          <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              Profile
+            </a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              Settings
+            </a>
+            <div class="border-t border-gray-200 my-2"></div>
+            <button
+              (click)="logout()"
+              class="block w-full text-left px-4 py-2 text-sm text-danger-600 hover:bg-gray-100"
+            >
+              Logout
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</header>

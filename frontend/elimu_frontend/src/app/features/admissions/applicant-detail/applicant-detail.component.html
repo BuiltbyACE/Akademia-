@@ -1,0 +1,235 @@
+@if (loading()) {
+  <div class="flex items-center justify-center h-64">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+  </div>
+} @else if (applicant()) {
+  <div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <button routerLink="/admissions" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200">
+          <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Applicant Profile</h1>
+          <p class="text-gray-600">Applied / ID: #ADM-2024-0892</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button class="btn-secondary">Request Info</button>
+        <button (click)="rejectApplication()" class="px-4 py-2 bg-danger-50 text-danger-600 font-medium rounded-lg hover:bg-danger-100">
+          Reject
+        </button>
+        <button (click)="approveAdmission()" class="btn-primary">Approve Admission</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left Column -->
+      <div class="space-y-6">
+        <!-- Profile Card -->
+        <div class="card text-center">
+          <div class="relative inline-block mb-4">
+            <div class="w-24 h-24 bg-gray-800 rounded-lg flex items-center justify-center mx-auto">
+              <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="absolute bottom-0 right-0 w-6 h-6 bg-success-500 rounded-full border-2 border-white"></div>
+          </div>
+          <h2 class="text-xl font-bold text-gray-900">{{ applicant()!.name }}</h2>
+          <p class="text-gray-600 mb-4">{{ applicant()!.grade }}</p>
+          <div class="flex items-center justify-center space-x-2 mb-4">
+            <span class="badge badge-primary">INTERVIEWING</span>
+            <span class="badge badge-gray">FALL 2024</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4 pt-4 border-t">
+            <div>
+              <p class="text-xs text-gray-600 uppercase mb-1">GPA Equivalent</p>
+              <p class="text-lg font-bold text-gray-900">3.85 / 4.0</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-600 uppercase mb-1">House Preference</p>
+              <p class="text-lg font-bold text-gray-900">Ravenwood</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Checklist -->
+        <div class="card">
+          <h3 class="font-semibold text-gray-900 mb-4">DOCUMENT CHECKLIST</h3>
+          <div class="space-y-3">
+            @for (doc of documents(); track doc.id) {
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  @if (doc.status === 'received') {
+                    <div class="w-6 h-6 bg-success-100 rounded-full flex items-center justify-center">
+                      <svg class="w-4 h-4 text-success-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                  } @else {
+                    <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                      <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                  }
+                  <span class="text-sm text-gray-900">{{ doc.name }}</span>
+                </div>
+                @if (doc.status === 'received') {
+                  <span class="badge badge-success text-xs">RECEIVED</span>
+                } @else {
+                  <span class="badge badge-warning text-xs">PENDING</span>
+                }
+              </div>
+            }
+          </div>
+          <button class="w-full mt-4 text-sm text-primary-600 hover:text-primary-700 font-medium py-2 border border-primary-200 rounded-lg hover:bg-primary-50">
+            REQUEST MISSING FILES
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Application Journey -->
+        <div class="card">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-semibold text-gray-900">Application Journey</h3>
+            <button (click)="moveToNextStage()" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
+              Move to Next Stage →
+            </button>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex flex-col items-center">
+              <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center mb-2">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-gray-900">Inquiry</span>
+            </div>
+            <div class="flex-1 h-1 bg-primary-600 mx-2"></div>
+            <div class="flex flex-col items-center">
+              <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center mb-2">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-gray-900">Applied</span>
+            </div>
+            <div class="flex-1 h-1 bg-primary-600 mx-2"></div>
+            <div class="flex flex-col items-center">
+              <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center mb-2 relative">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <div class="absolute -top-1 -right-1 w-4 h-4 bg-primary-600 rounded-full animate-ping"></div>
+              </div>
+              <span class="text-xs font-medium text-gray-900">Interview</span>
+            </div>
+            <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
+            <div class="flex flex-col items-center">
+              <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-2">
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-gray-400">Accepted</span>
+            </div>
+            <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
+            <div class="flex flex-col items-center">
+              <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-2">
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-gray-400">Enrolled</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interview Assessment -->
+        @if (interviewAssessment()) {
+          <div class="card">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-semibold text-gray-900">Interview Assessment</h3>
+              <p class="text-xs text-gray-600">Last updated {{ interviewAssessment()!.last_updated }} by {{ interviewAssessment()!.updated_by }}</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6 mb-6">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-medium text-gray-700">ACADEMIC READINESS</span>
+                  <span class="text-sm font-bold text-gray-900">{{ interviewAssessment()!.academic_readiness }}/5</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                  @for (star of [1,2,3,4,5]; track star) {
+                    <svg [class.text-primary-600]="star <= interviewAssessment()!.academic_readiness" 
+                         [class.text-gray-300]="star > interviewAssessment()!.academic_readiness"
+                         class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  }
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-medium text-gray-700">CULTURAL FIT</span>
+                  <span class="text-sm font-bold text-gray-900">{{ interviewAssessment()!.cultural_fit }}/5</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                  @for (star of [1,2,3,4,5]; track star) {
+                    <svg [class.text-primary-600]="star <= interviewAssessment()!.cultural_fit" 
+                         [class.text-gray-300]="star > interviewAssessment()!.cultural_fit"
+                         class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Interview Notes</h4>
+              <div class="p-4 bg-gray-50 rounded-lg">
+                <p class="text-sm text-gray-700 italic">{{ interviewAssessment()!.notes }}</p>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <button (click)="addNote()" class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                <span class="text-sm font-medium">ADD NEW NOTE</span>
+              </button>
+              <button (click)="attachRecording()" class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+                <span class="text-sm font-medium">ATTACH RECORDING</span>
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Additional Info -->
+        <div class="grid grid-cols-2 gap-6">
+          <div class="card bg-blue-50">
+            <h4 class="text-sm font-medium text-gray-700 mb-2">FAVORITE SUBJECT</h4>
+            <p class="text-lg font-bold text-gray-900">Theoretical Physics & Latin</p>
+          </div>
+          <div class="card bg-purple-50">
+            <h4 class="text-sm font-medium text-gray-700 mb-2">EXTRA-CURRICULAR</h4>
+            <p class="text-lg font-bold text-gray-900">Junior Debating Team Captain</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

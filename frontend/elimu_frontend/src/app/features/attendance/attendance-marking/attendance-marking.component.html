@@ -1,0 +1,111 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Daily Attendance</h1>
+      <p class="text-gray-600 mt-1">Thursday, 24 October 2024</p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2">
+        <label class="text-sm font-medium text-gray-700">GRADE & SECTION</label>
+        <select [(ngModel)]="selectedGrade" class="input w-32">
+          <option value="10">Grade 10</option>
+          <option value="11">Grade 11</option>
+          <option value="12">Grade 12</option>
+        </select>
+        <select [(ngModel)]="selectedSection" class="input w-24">
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+      <button (click)="markAllPresent()" class="btn-primary">Mark All Present</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <table class="w-full">
+      <thead class="bg-gray-50 border-b">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">ROLL</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">STUDENT NAME</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">STATUS</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">NOTES</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y">
+        @for (record of records(); track record.id; let i = $index) {
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-4 text-sm text-gray-900">{{ (i + 1).toString().padStart(2, '0') }}</td>
+            <td class="px-4 py-4">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                  <span class="text-primary-600 font-medium text-sm">{{ record.student_name.charAt(0) }}</span>
+                </div>
+                <span class="text-sm font-medium text-gray-900">{{ record.student_name }}</span>
+              </div>
+            </td>
+            <td class="px-4 py-4">
+              <div class="flex items-center space-x-2">
+                <button
+                  (click)="setStatus(record, 'present')"
+                  [class.bg-success-100]="record.status === 'present'"
+                  [class.text-success-800]="record.status === 'present'"
+                  [class.text-gray-600]="record.status !== 'present'"
+                  class="px-3 py-1 rounded-lg text-sm font-medium hover:bg-gray-100"
+                >
+                  PRESENT
+                </button>
+                <button
+                  (click)="setStatus(record, 'absent')"
+                  [class.bg-danger-100]="record.status === 'absent'"
+                  [class.text-danger-800]="record.status === 'absent'"
+                  [class.text-gray-600]="record.status !== 'absent'"
+                  class="px-3 py-1 rounded-lg text-sm font-medium hover:bg-gray-100"
+                >
+                  ABSENT
+                </button>
+                <button
+                  (click)="setStatus(record, 'late')"
+                  [class.bg-warning-100]="record.status === 'late'"
+                  [class.text-warning-800]="record.status === 'late'"
+                  [class.text-gray-600]="record.status !== 'late'"
+                  class="px-3 py-1 rounded-lg text-sm font-medium hover:bg-gray-100"
+                >
+                  LATE
+                </button>
+              </div>
+            </td>
+            <td class="px-4 py-4">
+              <input type="text" placeholder="Add note..." class="input text-sm" />
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="flex items-center justify-between px-4 py-4 border-t bg-gray-50">
+      <div class="flex items-center space-x-6">
+        <div class="text-sm">
+          <span class="text-gray-600">TOTAL STUDENTS</span>
+          <span class="ml-2 font-bold text-gray-900">{{ summary.total }}</span>
+        </div>
+        <div class="text-sm">
+          <span class="text-success-600">PRESENT</span>
+          <span class="ml-2 font-bold text-success-600">{{ summary.present }}</span>
+        </div>
+        <div class="text-sm">
+          <span class="text-danger-600">ABSENT</span>
+          <span class="ml-2 font-bold text-danger-600">{{ summary.absent }}</span>
+        </div>
+        <div class="text-sm">
+          <span class="text-warning-600">LATE</span>
+          <span class="ml-2 font-bold text-warning-600">{{ summary.late }}</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button class="btn-secondary">Save as Draft</button>
+        <button class="btn-primary">Submit Attendance →</button>
+      </div>
+    </div>
+  </div>
+</div>
